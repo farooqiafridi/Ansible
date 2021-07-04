@@ -1,0 +1,91 @@
+Ansible installation
+-----------------------
+On Ansible Engine
+====================
+# yum update -y
+#yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+# yum install Ansible
+
+creating ssh key & authententicating password less
+===================================================
+
+on Engine
+---------
+# shh-keygen
+#cat ~/.ssh/id_rsa.pub | ssh ansadmin@172.31.28.55 "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
+# visudo  ->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> all no password
+#vi /etc/ssh/sshd_config ->>>>>>>>>>>>>>>>>>>>>> yes
+# ssh user@ip
+
+writing IPs in INVENTORY file
+==================================
+# vi /etc/ansible/hosts
+ip--001
+ip--002
+ip--003
+checking setting of inventory file in ansible.cfg file
+=========================================================
+
+# cat /etc/ansible/ansible.cfg
+ (.) (.)
+    *
+   ---
+================================================================================================================================================
+master
+======
+#ansible all -m ping
+#ansible ip1:ip2:ip3 -m ping
+#ansible group1:group2 -m ping
+
+#ansible ip1 -m shell -a "hostame"
+----------------------------------------------------------------------------------------------------
+#ansible all -i diffrentinventoryfile -m ping
+-=========================================================================================
+shell module
+==============
+#ansible all -m shell -a "ls -a"
+#ansible ip:ip:group1 -m shell -a "ls -a"
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ file-module
+ ============
+ #ansible 172.31.20.121 -m file -a "path=file.txt state=touch "
+ #ansible 172.31.20.121 -m  file -a "path=/root/file001 state=touch " -b -->>>>>>root priviliages
+ #ansible 172.31.20.121 -m file -a "path=file.txt state=directory mode=0777"
+ #ansible 172.31.20.121 -m file -a "path=file.txt state=absent "
+ -----------------------------------------------------------------------------------------------------------
+copy module
+-----------------
+#ansible 172.31.20.121 -m copy -a "src=./hello dest=."
+#ansible 172.31.20.121 -m copy -a "src=home/ansadmin/hello dest=/dir001/dir002/file001"
+
+#ansible 172.31.20.121 -m copy -a "content='hello this is a simple content' dest=/temp/hello"
+when we want to overide old sentence with new one which giving  now
+
+#ansible 172.31.20.121 -m copy -a "content='hello this is a complex content' dest=/temp/hello backup=yes"
+when we want to add new sentence with old sentences also 
+
+
+
+
+fetch module
+=======================
+# ansible 172.31.20.121 -m fetch -a "src=./hello dest=./"
+--------------------------------------------------------------------------------------------------------------
+Installing packages by using Adhoc-command
+===========================================
+yum module
+========================
+#ansible 172.31.20.121 -m yum -a "name=git state=latest" -b
+#ansible 172.31.20.121 -m yum -a "name=httpd state=present" -b
+aptmodule
+===========
+#ansible 172.31.20.121 -m apt -a "name=httpd state=present" -b
+
+========================================================================
+Ansible Facts
+============
+information of servers like ips,o.s,networking,like total information
+
+setup module
+-----------------------------
+#ansible 172.31.20.121 -m setup
